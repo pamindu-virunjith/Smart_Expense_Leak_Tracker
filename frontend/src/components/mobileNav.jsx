@@ -55,7 +55,8 @@ export default function MobileNav() {
                 <span className="sr-only">Open user menu</span>
                 <img
                   alt="user"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  // https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80
+                  src="https://plus.unsplash.com/premium_vector-1682269287900-d96e9a6c188b?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   className="size-9 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
                 />
               </MenuButton>
@@ -66,9 +67,12 @@ export default function MobileNav() {
               >
                 <div className="text-center">
                   {token ? (
-                    <p className="text-sm font-medium text-gray-500 py-3">
+                    <div>
+                    <p className="text-sm font-medium text-gray-500 pt-2">
                       Hello, Pamindu
                     </p>
+                    <p className="text-xs text-gray-500/70 pb-2">{new Date().toDateString()}</p>
+                  </div>
                   ) : (
                     <p className="text-sm font-medium text-gray-500 py-3">
                       Hello, Guest
