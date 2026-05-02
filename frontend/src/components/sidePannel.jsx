@@ -32,7 +32,7 @@ function SidePannel() {
         </div>
         {token ? (
           <>
-            <h4 className=" font-bold">Welcome, Pamindu</h4>
+            <h4 className="font-bold">Welcome Back</h4>
             <p className="mb-5 text-xs text-white/70">{new Date().toDateString()}</p>
             <button className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-sm text-sm font-semibold transition-colors cursor-pointer" onClick={()=>{
               localStorage.removeItem("token")

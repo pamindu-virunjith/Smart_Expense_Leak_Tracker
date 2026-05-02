@@ -1,4 +1,4 @@
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, Smile } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -123,10 +123,13 @@ const Dashboard = () => {
           ) : (
             // if no leaks
             <div>
-              {insights.topLeak === undefined ? (
-                <p className="text-center text-gray-400 py-5">
-                  No leaks detected.
+              {insights.topLeak === null ? (
+                <div className="flex flex-col items-center text-gray-400 py-5 gap-1">
+                  <p>
+                  No leaks detected for this month.
                 </p>
+                <p><Smile/></p>
+                </div>
               ) : (
                 <div>
                   <div className="mb-1">

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Flame, Frown, Sparkles } from "lucide-react";
+import { Flame, Smile, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   PieChart,
@@ -38,28 +38,18 @@ const InsightsPage = () => {
       });
   }, [token]);
 
-  // Mock Data for Charts
-  const pieData = [
-    { name: "Shopping", value: 40, color: "#ec4899" },
-    { name: "Food", value: 16, color: "#f97316" },
-    { name: "Bills", value: 13, color: "#3b82f6" },
-    { name: "Entertainment", value: 9, color: "#a855f7" },
-    { name: "Coffee", value: 8, color: "#b45309" },
-    { name: "Transport", value: 7, color: "#60a5fa" },
-    { name: "Subscriptions", value: 7, color: "#6366f1" },
-    { name: "Other", value: 5, color: "#fbbf24" },
-  ];
-
-  const barData = [
-    { name: "Food", last: 3000, current: 4200 },
-    { name: "Coffee", last: 2000, current: 1800 },
-    { name: "Transport", last: 2500, current: 2800 },
-    { name: "Subscriptions", last: 1500, current: 1600 },
-    { name: "Shopping", last: 1500, current: 7500 },
-    { name: "Bills", last: 3200, current: 3500 },
-    { name: "Entertainment", last: 2800, current: 2500 },
-    { name: "Other", last: 1000, current: 1200 },
-  ];
+  const categoryColors = {
+    food: "#f97316",
+    shopping: "#ec4899",
+    bills: "#306BC9",
+    education: "#E31414",
+    health: "#00BA00",
+    entertainment: "#a855f7",
+    transport: "#14FCFF",
+    subscriptions: "#6F71F2",
+    drinks: "#b45309",
+    other: "#fbbf24",
+  };
 
   return (
     <div>
@@ -74,9 +64,11 @@ const InsightsPage = () => {
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-2">
           <Flame className="text-orange-500" size={20} />
-          <h2 className="text-lg font-bold">Repeated small-expense leaks</h2>
+          <h2 className="text-lg xl:text-xl font-bold">
+            Repeated small-expense leaks
+          </h2>
         </div>
-        <p className="text-xs text-gray-400 mb-6">
+        <p className="text-sm text-gray-400 mb-6">
           Small recurring purchases under Rs. 200.00 that add up over the last
           30 days.
         </p>
@@ -85,112 +77,134 @@ const InsightsPage = () => {
             <div className="w-full text-center py-5">
               <ThreeDot variant="pulsate" color="#bcbcbc" size="medium" />
             </div>
-          ) : insights?.leaks === undefined ? (
+          ) : insights?.leaks.length === 0 ? (
             <div>
-              <p className="w-full py-5 flex items-center justify-center text-gray-400 font-bold md:text-lg">No Leaks Detected yet. <span className="ml-2"><Frown /></span></p>
+              <p className="w-full py-5 flex items-center justify-center text-gray-400 font-bold md:text-lg">
+                No Leaks Detected for this month yet.{" "}
+                <span className="ml-2">
+                  <Smile />
+                </span>
+              </p>
             </div>
           ) : (
             <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {
-                insights?.leaks.map((leak,i)=>{
-                  const config =
-                              categoryConfig[leak?.category.toLowerCase()] ||
-                              categoryConfig.other;
-                  return(
-                    <div key={i}>
-                    <LeakCard percentage={leak?.percentage} message={leak?.message} total={leak?.total} count={leak?.count} avg={leak?.avg} config={config} type={leak?.type}/>
-                  </div>
-                  )
-                })
-              }
+              {insights?.leaks.map((leak, i) => {
+                const config =
+                  categoryConfig[leak?.category.toLowerCase()] ||
+                  categoryConfig.other;
+                return (
+                  <LeakCard
+                    percentage={leak?.percentage}
+                    message={leak?.message}
+                    total={leak?.total}
+                    count={leak?.count || 6}
+                    avg={leak?.avg || 138.5}
+                    config={config}
+                    type={leak?.type}
+                    key={i}
+                  />
+                );
+              })}
             </div>
           )}
         </div>
       </section>
 
       {/* Section: Category Insights */}
-      <div className="grid xl:grid-cols-2 gap-6 mb-8">
+      <div className="grid xl:grid-cols-3 gap-6 mb-8">
         {/* Donut Chart */}
-        <div className="bg-white p-3 md:p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <h3 className="font-bold mb-1">This month by category</h3>
-          <p className="text-[10px] text-gray-400 mb-4">Total: ₹18,074</p>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
+        <div className=" bg-white p-3 md:p-6 rounded-2xl border border-gray-100 shadow-sm">
+          <h3 className="font-bold mb-1 text-lg 2xl:text-2xl">
+            This month by category
+          </h3>
+          <p className="text-gray-400 mb-4 text-sm md:text-lg">
+            Total: <span>{`Rs. ${insights?.totalSpent?.toFixed(2)}`}</span>
+          </p>
+          <div className="h-64 w-full min-w-0">
+            <ResponsiveContainer width="100%" height={250}>
+              {!isLoading && (
+                <PieChart>
+                  <Pie
+                    data={insights?.monthlyCategoryTotals}
+                    innerRadius={65}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey={"amount"}
+                    nameKey={"category"}
+                  >
+                    {insights?.monthlyCategoryTotals.map((entry, index) => (
+                      <Cell
+                        key={index}
+                        fill={
+                          categoryColors[entry.category.toLowerCase()] ||
+                          "#9ca3af"
+                        }
+                      />
+                    ))}
+                  </Pie>
+                  {/* should show category name(label) and value */}
+
+                  <Tooltip formatter={(value) => `Rs.${value.toFixed(2)}`}/>
+                </PieChart>
+              )}
             </ResponsiveContainer>
           </div>
           {/* Custom Legend */}
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4">
-            {pieData.map((entry) => (
+            {!isLoading && insights?.monthlyCategoryTotals.map((entry,i) => (
               <div
-                key={entry.name}
-                className="flex items-center gap-1.5 text-[10px] font-medium text-gray-600"
+                key={i}
+                className="flex items-center gap-1.5 text-sm md:text-[16px] md:font-medium text-gray-600"
               >
                 <div
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: entry.color }}
+                  style={{ backgroundColor: categoryColors[entry.category.toLowerCase()] }}
                 ></div>
-                {entry.name}
+                {entry.category}
               </div>
             ))}
           </div>
         </div>
 
         {/* Bar Chart */}
-        <div className="bg-white p-3 md:p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <h3 className="font-bold mb-1">Month over month</h3>
-          <p className="text-[10px] text-gray-400 mb-4">
+        <div className="xl:col-span-2 bg-white p-3 md:p-6 rounded-2xl border border-gray-100 shadow-sm">
+          <h3 className="font-bold mb-1 text-lg 2xl:text-2xl">
+            Month over month
+          </h3>
+          <p className="text-gray-400 mb-4 text-sm md:text-lg">
             This month vs last month per category
           </p>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData}>
+          <div className="h-64 w-full min-w-0">
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={insights?.monthlyCategoryComparison}>
                 {/* rotate x axis text to vertical direction */}
                 <XAxis
-                  dataKey="name"
-                  fontSize={10}
-                  angle={-40}
+                  dataKey="category"
+                  fontSize={12}
+                  angle={-30}
                   textAnchor="end"
                   tickLine={false}
                   interval={0}
                   height={60}
                 />
-                <YAxis
-                  fontSize={10}
-                  axisLine={false}
-                  axisLine={true}
-                  tickLine={false}
-                />
+                <YAxis fontSize={10} axisLine={true} tickLine={false} />
                 <Tooltip cursor={{ fill: "transparent" }} />
                 <Bar
-                  dataKey="last"
+                  dataKey="lastMonth"
                   fill="#64748b"
                   radius={[4, 4, 0, 0]}
-                  barSize={12}
+                  barSize={10}
                 />
                 <Bar
-                  dataKey="current"
+                  dataKey="currentMonth"
                   fill="#3b82f6"
                   radius={[4, 4, 0, 0]}
-                  barSize={12}
+                  barSize={10}
                 />
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex justify-center gap-4 mt-4 text-[10px] font-medium text-gray-500">
+          <div className="flex justify-center gap-4 mt-4 font-medium text-gray-500 text-sm md:text-[16px]">
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 bg-slate-500 rounded-sm"></div> Last month
             </div>
@@ -202,24 +216,31 @@ const InsightsPage = () => {
       </div>
 
       {/* Top Categories List */}
-      {/* <section className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+      <section className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
           <h3 className="text-xl font-bold mb-8">Top categories</h3>
           <div className="space-y-6">
-            {pieData.map((cat) => (
-              <div key={cat.name} className="space-y-2">
-                <div className="flex justify-between text-xs font-bold">
+            {insights?.monthlyCategoryComparison?.map((category,i) => (
+              <div key={i} className="space-y-2">
+                <div className="flex justify-between text-sm font-bold">
                   <span className="flex items-center gap-2">
-                    <span className="text-gray-400">🛍️</span> {cat.name} <span className="font-normal text-gray-400">{cat.value}%</span>
+                    <div
+                  className={`flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight ${categoryConfig[category.category.toLowerCase()].color}`}
+                >
+                  {categoryConfig[category.category.toLowerCase()].icon}
+                  {categoryConfig[category.category.toLowerCase()].label}
+                </div>
+                     <span className="font-normal text-gray-400">{category.change}%</span>
                   </span>
-                  <span className="text-gray-900">₹7,199</span>
+                  <span className="text-gray-900">{` Rs. ${category.currentMonth.toFixed(2)}`}</span>
                 </div>
                 <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${cat.value}%`, backgroundColor: cat.color }}></div>
+                  {/* <div className="h-full rounded-full" style={{ width: `${category.change}%`, backgroundColor: categoryColors[category.category.toLowerCase()]}}></div> */}
+                  <div className={`h-full rounded-full ${categoryConfig[category.category.toLowerCase()].bgColor} w-[${category.change}%]`}></div>
                 </div>
               </div>
             ))}
           </div>
-        </section> */}
+        </section>
     </div>
   );
 };

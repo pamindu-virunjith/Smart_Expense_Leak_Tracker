@@ -28,35 +28,9 @@ export function detectLeaks(expenses) {
         category,
         count,
         total,
+        yearlyTotal: total * 12,
         avg: Math.round(total / count),
         message: `You made ${count} small ${category} expenses totaling Rs.${total}`,
-      });
-    }
-  }
-
-  //   category Dominance
- const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const categoryTotals = {};
-
-  expenses.forEach(exp => {
-    if (!categoryTotals[exp.category]) {
-      categoryTotals[exp.category] = 0;
-    }
-    categoryTotals[exp.category] += exp.amount;
-  });
-
-  for (let category in categoryTotals) {
-    const percentage = (categoryTotals[category] / totalSpent) * 100;
-    // const alreadyAdded = leaks.some(l => l.category === category);
-
-    // if ( !alreadyAdded && percentage >= 40) {
-    if (percentage >= 40) {
-      leaks.push({
-        type: "category_dominance",
-        category,
-        percentage: percentage.toFixed(1),
-        total: categoryTotals[category],
-        message: `${category} accounts for ${percentage.toFixed(1)}% of your spending`
       });
     }
   }

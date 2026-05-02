@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ThreeDot } from "react-loading-indicators";
 import axios from "axios";
+import DeleteModal from "../components/expenses/dialogModal";
+import toast from "react-hot-toast";
+import { categoryConfig } from "../utils/categories";
 
 const ExpensesPage = () => {
   const navigate = useNavigate();
@@ -10,6 +13,8 @@ const ExpensesPage = () => {
   const token = localStorage.getItem("token");
   const [expenses, setExpenses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [targetId, setTargetId] = useState(null);
 
   useEffect(() => {
     axios
@@ -26,6 +31,34 @@ const ExpensesPage = () => {
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   }, [category, token]);
+
+  const confirmDelete = () => {
+    setIsLoading(true);
+    axios
+      .delete(
+        import.meta.env.VITE_BACKEND_URL +
+          "/api/expense/deleteExpense/" +
+          targetId,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((res) => {
+        // console.log(res.data.message)
+        toast.success(res?.data?.message || "Expense deleted successfully");
+        setExpenses((prevExpenses) =>
+          prevExpenses.filter((exp) => exp._id !== targetId),
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err?.response?.data?.message || "Something went wrong");
+      })
+      .finally(() => {
+        setIsOpen(false);
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div>
@@ -53,6 +86,7 @@ const ExpensesPage = () => {
               >
                 <option value="all">All categories</option>
                 <option value="food">Food</option>
+                <option value="drinks">Drinks</option>
                 <option value="shopping">Shopping</option>
                 <option value="bills">Bills</option>
                 <option value="education">Education</option>
@@ -60,7 +94,6 @@ const ExpensesPage = () => {
                 <option value="entertainment">Entertainment</option>
                 <option value="transport">Transport</option>
                 <option value="subscriptions">Subscriptions</option>
-                <option value="drinks">Drinks</option>
                 <option value="other">Other</option>
               </select>
 
@@ -98,11 +131,22 @@ const ExpensesPage = () => {
                     className="group hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="py-5">{expenses[i].date.split("T")[0]}</td>
-                    <td className="py-5">
-                      {expenses[i].category.charAt(0).toUpperCase() +
-                        expenses[i].category.slice(1)}
+                    <td className="py-5 capitalize">
+                      {/* {expenses[i].category} */}
+                      <p
+                        className={`flex items-center w-fit px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight ${categoryConfig[expenses[i].category.toLowerCase()].color}`}
+                      >
+                        {
+                          categoryConfig[expenses[i].category.toLowerCase()]
+                            .icon
+                        }
+                        {
+                          categoryConfig[expenses[i].category.toLowerCase()]
+                            .label
+                        }
+                      </p>
                     </td>
-                    <td className="py-5">{expenses[i].note}</td>
+                    <td className="py-5 capitalize">{expenses[i].note}</td>
                     <td className="py-5 text-right">
                       {expenses[i].amount.toFixed(2)}
                     </td>
@@ -118,7 +162,13 @@ const ExpensesPage = () => {
                         >
                           <Pencil size={18} />
                         </button>
-                        <button className="hover:text-red-600 transition-colors cursor-pointer">
+                        <button
+                          onClick={() => {
+                            setIsOpen(true);
+                            setTargetId(expenses[i]._id);
+                          }}
+                          className="hover:text-red-600 transition-colors cursor-pointer"
+                        >
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -137,6 +187,11 @@ const ExpensesPage = () => {
               )}
             </tbody>
           </table>
+          <DeleteModal
+            open={isOpen}
+            setOpen={setIsOpen}
+            onDelete={confirmDelete}
+          />
         </div>
       </section>
     </div>

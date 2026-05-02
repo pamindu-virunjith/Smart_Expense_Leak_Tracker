@@ -28,7 +28,7 @@ const RecentExpenses = ({ expenses }) => {
 
                 {/* Title and Date */}
                 <div className="px-3 mt-2 sm:px-0 sm:mt-0">
-                  <h3 className="text-sm font-bold text-gray-900">
+                  <h3 className="text-sm font-bold text-gray-900 capitalize">
                     {expense.note}
                   </h3>
                   <p className="text-xs text-gray-400">
