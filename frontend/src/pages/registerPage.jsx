@@ -99,7 +99,7 @@ function RegisterPage() {
 
           <button
             type="submit"
-            className="mt-4 flex w-full justify-center rounded-md bg-blue-600 px-4 py-3 text-lg font-medium text-white shadow-sm hover:bg-blue-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+            className="mt-4 flex w-full justify-center rounded-md bg-blue-600 px-4 py-3 text-lg font-medium text-white shadow-sm hover:bg-blue-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 cursor-pointer"
           >
             Create Account
           </button>

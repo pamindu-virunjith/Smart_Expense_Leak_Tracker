@@ -93,7 +93,7 @@ export async function searchExpenseByCategory(req, res) {
       filter.category = category;
     }
 
-    const result = await Expense.find(filter).sort({ createdAt: -1 });
+    const result = await Expense.find(filter).sort({ date: -1 });
 
     // if(result.length === 0){
     //   return res.status(404).json({
@@ -164,13 +164,13 @@ export async function insightsDetails(req, res) {
     }
 
     // category dominance
-    const dominanceOfCategories = categoryDominance(currentMonthExpenses);
+    const dominanceOfCategories = categoryDominance(currentMonthExpenses, lastMonthExpenses);
 
     // currentMonth Category totals
     const monthlyCategoryTotals = currentMonthCategoryTotals(currentMonthExpenses);
 
     //expenses of last Month over current Month
-    const monthlyCategoryComparison = getMonthlyCategoryStatus(currentMonthExpenses, lastMonthExpenses);
+    const categoryComparison = getMonthlyCategoryStatus(currentMonthExpenses, lastMonthExpenses);
 
     res.status(200).json({
       totalSpent,
@@ -181,7 +181,7 @@ export async function insightsDetails(req, res) {
       leakCount: leaks.length,
       dominanceOfCategories,
       recentExpenses,
-      monthlyCategoryComparison,
+      categoryComparison,
       monthlyCategoryTotals
     });
   } catch (err) {

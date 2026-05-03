@@ -16,7 +16,7 @@ function MainPage() {
   const isEditPage = matchPath("/editExpense/:id", path);
 
   return (
-    <div className="lg:flex lg:min-h-screen bg-slate-50 font-sans">
+    <div className="lg:flex h-screen lg:min-h-screen bg-slate-50 font-sans">
       {/* Sidebar */}
       <SidePannel />
       <MobileNav />

@@ -17,7 +17,7 @@ const RecentExpenses = ({ expenses }) => {
                 index !== expenses.length - 1 ? "border-b border-gray-100" : ""
               }`}
             >
-              <div className="sm:flex items-center gap-4">
+              <div className="sm:flex items-start gap-4">
                 {/* Category Badge */}
                 <div
                   className={`flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight ${config.color}`}

@@ -20,6 +20,7 @@ function LoginPage() {
         // console.log(res)
         toast.success(res.data.message)
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.name));
         navigate("/dashboard");
       })
       .catch((err) => {
@@ -118,7 +119,7 @@ function LoginPage() {
 
           <button
             type="submit"
-            className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+            className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors cursor-pointer"
           >
             Login
           </button>

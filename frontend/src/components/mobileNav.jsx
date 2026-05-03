@@ -50,13 +50,12 @@ export default function MobileNav() {
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
-              <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+              <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 cursor-pointer">
                 <span className="absolute -inset-1.5" />
                 <span className="sr-only">Open user menu</span>
                 <img
                   alt="user"
-                  // https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80
-                  src="https://plus.unsplash.com/premium_vector-1682269287900-d96e9a6c188b?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src="https://img.magnific.com/premium-vector/animator-vector-character-flat-style_1033579-57808.jpg?w=360"
                   className="size-9 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
                 />
               </MenuButton>
@@ -68,8 +67,8 @@ export default function MobileNav() {
                 <div className="text-center">
                   {token ? (
                     <div>
-                    <p className="text-sm font-medium text-gray-500 pt-2">
-                      Hello, Pamindu
+                    <p className="text-sm font-medium text-gray-500 pt-2 capitalize">
+                      Hello, {JSON.parse(localStorage.getItem("user"))}
                     </p>
                     <p className="text-xs text-gray-500/70 pb-2">{new Date().toDateString()}</p>
                   </div>
@@ -84,6 +83,7 @@ export default function MobileNav() {
                     <button
                       onClick={()=>{
                         localStorage.removeItem("token")
+                        localStorage.removeItem("user")
                         navigate("/login")
                       }}
                       className="w-full text-center block px-4 py-2 text-sm font-bold text-gray-700 data-focus:bg-black/10 data-focus:outline-hidden dark:text-gray-300 dark:data-focus:bg-white/5 cursor-pointer"

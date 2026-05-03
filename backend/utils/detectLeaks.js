@@ -30,7 +30,7 @@ export function detectLeaks(expenses) {
         total,
         yearlyTotal: total * 12,
         avg: Math.round(total / count),
-        message: `You made ${count} small ${category} expenses totaling Rs.${total}`,
+        message: `You made ${count} small ${category} expenses totaling Rs.${total.toFixed(2)}`,
       });
     }
   }

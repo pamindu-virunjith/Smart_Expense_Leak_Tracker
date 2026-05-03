@@ -51,7 +51,7 @@ function FormCard({ expense, setExpense, handleSubmit, method, loading }) {
                 <option value="transport">Transport</option>
                 <option value="subscriptions">Subscriptions</option>
                 <option value="drinks">Drinks</option>
-                <option value="bills">Other</option>
+                <option value="other">Other</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">
                 <ChevronDown className="text-gray-400" />

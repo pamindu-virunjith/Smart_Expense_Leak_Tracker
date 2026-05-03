@@ -24,7 +24,8 @@ export async function login(req, res){
 
             res.status(200).json({
                 message: "Login Successfully",
-                token: token
+                token: token,
+                name: user.name
             })
         }else{
             res.status(400).json({
